@@ -1007,6 +1007,21 @@ fn test_snapshot_process_spawn_async() {
     assert_json_snapshot!(snapshot);
 }
 
+// Spawns a sub-process with piped stdin and stdout
+#[cfg(not(target_os = "windows"))]
+#[cfg_attr(
+    any(target_env = "musl", target_os = "macos", target_os = "windows"),
+    ignore
+)]
+#[test]
+fn test_snapshot_process_spawn_stdio_stdout() {
+    let snapshot = TestBuilder::new()
+        .with_name(function!())
+        .use_coreutils()
+        .run_wasm(include_bytes!("./wasm/example-spawn-stdin-stdout.wasm"));
+    assert_json_snapshot!(snapshot);
+}
+
 // FIXME: re-enable - hangs on windows and macos
 // Connects to 8.8.8.8:53 over TCP to verify TCP clients work
 // #[test]
